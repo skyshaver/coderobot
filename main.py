@@ -67,9 +67,10 @@ async def on_message(message):
                 f'`{" ".join(com.com_list)}`\n'
                 f'to print a snippet prepend it with $ like $random'
                 )
-    else:
-        msg = message.content[message.content.rfind('>') + 1:]
-        print(msg)
+    else:        
+        msgs = message.content.split()
+        keys = [msg[1:] for msg in msgs if msg[0] == "$"]
+        print(keys)
         if message.content in code_keys:        
             await message.channel.send(db.get(message.content))
         else:
