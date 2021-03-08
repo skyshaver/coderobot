@@ -15,12 +15,9 @@ async def on_ready():
 async def on_message(message):
     if message.author == client.user:
         return
-    # this won't work if someone wants to at someone and post a snippet
-    # if (client.user in message.mentions and len(message.mentions) > 1) or \
-    #     (len(message.mentions) == 1 and not client.user in message.mentions):
-    #     return
-
+    
     # if bot is the only user mentioned give access to tools
+    #TODO : deal with empty input
     if client.user in message.mentions and len(message.mentions) == 1:
         helpful = True if 'helpful' in [str(role) for role in message.author.roles] else False
         
@@ -34,7 +31,7 @@ async def on_message(message):
             else:
                 await message.channel.send(f'`{" ".join(code_keys)}`')
 
-        elif msg == 'commands' or msg == 'help':
+        elif msg == 'commands' or msg == 'help' or msg == '-h':
             await message.channel.send(com.commands)
         
         elif (msg.startswith("rem") or msg.startswith("add") or msg.startswith("blame")) \
@@ -84,6 +81,5 @@ async def on_message(message):
                 await message.channel.send(k["body"])
             else:
                 await message.channel.send("key not found")
-
 
 client.run(config.TOKEN)
