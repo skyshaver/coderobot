@@ -1,3 +1,5 @@
+com_list = ["add", "rem", "update", "blame", "help", "commands"]
+
 commands = """
 * **rem** and **add** only work for **helpful** role
 **add -** <add> followed by <key> followed by a \`\`\` delimited block of code:

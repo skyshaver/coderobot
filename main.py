@@ -16,10 +16,14 @@ async def on_message(message):
     if message.author == client.user:
         return
 
+    if (client.user in message.mentions and len(message.mentions) > 1) or \
+        (len(message.mentions) == 1 and not client.user in message.mentions):
+        return
+
     if client.user in message.mentions:
         helpful = True if 'helpful' in [str(role) for role in message.author.roles] else False
-        print(message.content)
         msg = message.content.split(' ', 1)[1]
+
         if msg == 'list':
             await message.channel.send(f'`{" ".join(code_keys)}`')
 
@@ -49,16 +53,17 @@ async def on_message(message):
             else:
                 await message.channel.send("key not found, nothing removed")            
 
-        elif len(msg.split()) > 1:
+        else:
             await message.channel.send(
                 f'Bot only accepts the folowing one word commands \n'
-                f'`{" ".join(code_keys)}`'
+                f'`{" ".join(com.com_list)}`\n'
+                f'to print a snippet prepend it with $ like $random'
                 )
-
-    if message.content in code_keys:        
-        await message.channel.send(db.get(message.content))
     else:
-        await message.channel.send("key not found")
+        if message.content in code_keys:        
+            await message.channel.send(db.get(message.content))
+        else:
+            await message.channel.send("key not found")
 
 
 client.run(config.TOKEN)
