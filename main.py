@@ -13,8 +13,6 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    print(message.content)
-
     if message.author == client.user:
         return
     # this won't work if someone wants to at someone and post a snippet
@@ -22,6 +20,7 @@ async def on_message(message):
     #     (len(message.mentions) == 1 and not client.user in message.mentions):
     #     return
 
+    # if bot is the only user mentioned give access to tools
     if client.user in message.mentions and len(message.mentions) == 1:
         helpful = True if 'helpful' in [str(role) for role in message.author.roles] else False
         msg = message.content.split(' ', 1)[1]
@@ -70,11 +69,11 @@ async def on_message(message):
     else:        
         msgs = message.content.split()
         keys = [msg[1:] for msg in msgs if msg[0] == "$"]
-        print(keys)
-        if message.content in code_keys:        
-            await message.channel.send(db.get(message.content))
-        else:
-            await message.channel.send("key not found")
+        for key in keys:        
+            if key in code_keys:        
+                await message.channel.send(db.get(key))
+            else:
+                await message.channel.send("key not found")
 
 
 client.run(config.TOKEN)
