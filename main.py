@@ -13,14 +13,16 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    print(message.content)
+
     if message.author == client.user:
         return
+    # this won't work if someone wants to at someone and post a snippet
+    # if (client.user in message.mentions and len(message.mentions) > 1) or \
+    #     (len(message.mentions) == 1 and not client.user in message.mentions):
+    #     return
 
-    if (client.user in message.mentions and len(message.mentions) > 1) or \
-        (len(message.mentions) == 1 and not client.user in message.mentions):
-        return
-
-    if client.user in message.mentions:
+    if client.user in message.mentions and len(message.mentions) == 1:
         helpful = True if 'helpful' in [str(role) for role in message.author.roles] else False
         msg = message.content.split(' ', 1)[1]
 
@@ -43,6 +45,9 @@ async def on_message(message):
                 await message.channel.send(key + " added")
             except Exception:
                 await message.channel.send("bad input, try again")
+        
+        elif msg.startswith("add") and not helpful:
+            await message.channel.send("add only available to helpful role")
             
         elif msg.startswith("rem") and helpful:
             words = msg.split()
@@ -53,6 +58,9 @@ async def on_message(message):
             else:
                 await message.channel.send("key not found, nothing removed")            
 
+        elif msg.startswith("rem") and not helpful:
+            await message.channel.send("rem only available to helpful role")
+
         else:
             await message.channel.send(
                 f'Bot only accepts the folowing one word commands \n'
@@ -60,6 +68,8 @@ async def on_message(message):
                 f'to print a snippet prepend it with $ like $random'
                 )
     else:
+        msg = message.content[message.content.rfind('>') + 1:]
+        print(msg)
         if message.content in code_keys:        
             await message.channel.send(db.get(message.content))
         else:
