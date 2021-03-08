@@ -29,10 +29,17 @@ async def on_message(message):
         time_stamp = str(message.created_at)
 
         if msg == 'list':
-            await message.channel.send(f'`{" ".join(code_keys)}`')
+            if len(code_keys) < 1:
+                await message.channel.send(f'list is empty')
+            else:
+                await message.channel.send(f'`{" ".join(code_keys)}`')
 
         elif msg == 'commands' or msg == 'help':
             await message.channel.send(com.commands)
+        
+        elif (msg.startswith("rem") or msg.startswith("add") or msg.startswith("blame")) \
+              and not helpful:
+            await message.channel.send("command only available to helpful role")
 
         elif msg.startswith("add") and helpful:            
             try:
@@ -46,9 +53,6 @@ async def on_message(message):
             except Exception as e:
                 print(e)
                 await message.channel.send("bad input, try again")
-        
-        elif msg.startswith("add") and not helpful:
-            await message.channel.send("add only available to helpful role")
             
         elif msg.startswith("rem") and helpful:
             words = msg.split()
@@ -58,9 +62,12 @@ async def on_message(message):
                 await message.channel.send(words[1] + " removed")
             else:
                 await message.channel.send("key not found, nothing removed")            
-
-        elif msg.startswith("rem") and not helpful:
-            await message.channel.send("rem only available to helpful role")
+        
+        elif msg.startswith("blame"):
+            words = msg.split()
+            if words[1] in code_keys:
+                key = db.get(words[1])
+                await message.channel.send(key["author"] + " " + key["time"])
 
         else:
             await message.channel.send(

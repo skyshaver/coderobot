@@ -7,6 +7,7 @@ add cout
 \`\`\`cpp
 std::cout << "hello world";
 \`\`\`
+**blame -** print name and time of last update to snippet
 **list -** lists all available keys for snippets
 **rem -** <rem> followed by <key> to be removed from snippets database:
 rem cout
