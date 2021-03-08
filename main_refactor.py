@@ -3,7 +3,7 @@ import pickledb
 import commands as com
 import config
 
-db = pickledb.load('snippets.db', False)
+db = pickledb.load('snippets_refactor.db', False)
 code_keys = db.getall()
 client = discord.Client()
 
@@ -23,7 +23,10 @@ async def on_message(message):
     # if bot is the only user mentioned give access to tools
     if client.user in message.mentions and len(message.mentions) == 1:
         helpful = True if 'helpful' in [str(role) for role in message.author.roles] else False
+        
         msg = message.content.split(' ', 1)[1]
+        author = str(message.author)
+        time_stamp = str(message.created_at)
 
         if msg == 'list':
             await message.channel.send(f'`{" ".join(code_keys)}`')
@@ -37,10 +40,11 @@ async def on_message(message):
                 key = words[0].split()[1]
                 value = words[1]
                 value = '```'+ value + '```'                
-                db.set(key, value)
+                db.set(key, {"body":value, "author":author, "time":time_stamp})
                 db.dump()
                 await message.channel.send(key + " added")
-            except Exception:
+            except Exception as e:
+                print(e)
                 await message.channel.send("bad input, try again")
         
         elif msg.startswith("add") and not helpful:
@@ -69,7 +73,8 @@ async def on_message(message):
         keys = [msg[1:] for msg in msgs if msg[0] == "$"]
         for key in keys:        
             if key in code_keys:        
-                await message.channel.send(db.get(key))
+                k = db.get(key)
+                await message.channel.send(k["body"])
             else:
                 await message.channel.send("key not found")
 
