@@ -3,7 +3,7 @@ import pickledb
 import commands as com
 import config
 
-db = pickledb.load('snippets_refactor.db', False)
+db = pickledb.load('snippets.db', False)
 code_keys = db.getall()
 client = discord.Client()
 
