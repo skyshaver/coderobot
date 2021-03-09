@@ -31,11 +31,10 @@ async def on_message(message):
             else:
                 await message.channel.send(f'`{" ".join(code_keys)}`')
 
-        elif msg == 'commands' or msg == 'help' or msg == '-h':
+        elif msg in ['commands', 'help', '-h']:
             await message.channel.send(com.commands)
         
-        elif (msg.startswith("rem") or msg.startswith("add") or msg.startswith("blame")) \
-              and not helpful:
+        elif msg.content.startswith("rem", "add", "blame") and not helpful:        
             await message.channel.send("command only available to helpful role")
 
         elif msg.startswith("add") and helpful:            
