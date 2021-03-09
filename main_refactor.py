@@ -34,7 +34,7 @@ async def on_message(message):
         elif msg in ['commands', 'help', '-h']:
             await message.channel.send(com.commands)
         
-        elif msg.content.startswith("rem", "add", "blame") and not helpful:        
+        elif message.content.startswith(("rem", "add", "blame")) and not helpful:        
             await message.channel.send("command only available to helpful role")
 
         elif msg.startswith("add") and helpful:            
@@ -52,24 +52,34 @@ async def on_message(message):
             
         elif msg.startswith("rem") and helpful:
             words = msg.split()
-            if words[1] in code_keys:
-                db.rem(words[1])
-                db.dump()
-                await message.channel.send(words[1] + " removed")
-            else:
-                await message.channel.send("key not found, nothing removed")            
+            try:
+                if words[1] in code_keys:
+                    db.rem(words[1])
+                    db.dump()
+                    await message.channel.send(words[1] + " removed")
+                else:
+                    await message.channel.send("key not found, nothing removed")
+            except Exception as e:
+                print(e)
+                await message.channel.send("bad input, try again")            
         
         elif msg.startswith("blame"):
             words = msg.split()
-            if words[1] in code_keys:
-                key = db.get(words[1])
-                await message.channel.send(key["author"] + " " + key["time"])
+            try:
+                if words[1] in code_keys:
+                    key = db.get(words[1])
+                    await message.channel.send(key["author"] + " " + key["time"])
+                else:
+                    await message.channel.send("key not found, no one to blame")
+            except Exception as e:
+                print(e)
+                await message.channel.send("bad input, try again")            
 
         else:
             await message.channel.send(
                 f'Bot only accepts the folowing one word commands \n'
                 f'`{" ".join(com.com_list)}`\n'
-                f'to print a snippet prepend it with $ like $random'
+                f'to print a snippet prepend it with _$_ like _$random_'
                 )
     else:        
         msgs = message.content.split()

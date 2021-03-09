@@ -1,4 +1,4 @@
-com_list = ["add", "rem", "update", "blame", "help", "commands"]
+com_list = ["add", "rem", "update", "blame","list", "help","-h", "commands"]
 
 commands = """
 **$ -** use as a prefix to post a code snippet by its key
