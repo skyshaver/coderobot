@@ -17,17 +17,20 @@ async def on_message(message):
         return
     
     # if bot is the only user mentioned give access to tools
-    #TODO : deal with empty input
     if client.user in message.mentions and len(message.mentions) == 1:
+        try:
+            msg = message.content.split(' ', 1)[1]
+        except Exception as e:
+            print(e)
+            await message.channel.send("nothing to say?")
+
         helpful = True if 'helpful' in [str(role) for role in message.author.roles] else False
-        
-        msg = message.content.split(' ', 1)[1]
         author = str(message.author)
         time_stamp = str(message.created_at)
 
         if msg == 'list':
             if len(code_keys) < 1:
-                await message.channel.send(f'list is empty')
+                await message.channel.send('list is empty')
             else:
                 await message.channel.send(f'`{" ".join(code_keys)}`')
 
