@@ -22,7 +22,8 @@ async def on_message(message):
             msg = message.content.split(' ', 1)[1]
         except Exception as e:
             print(e)
-            await message.channel.send("nothing to say?")
+            await message.channel.send("nothing to say? for help use _-h_ or _help_")
+            return
 
         helpful = True if 'helpful' in [str(role) for role in message.author.roles] else False
         author = str(message.author)
@@ -37,15 +38,18 @@ async def on_message(message):
         elif msg in ['commands', 'help', '-h']:
             await message.channel.send(com.commands)
         
-        elif message.content.startswith(("rem", "add", "blame")) and not helpful:        
+        elif message.content.startswith(("rem", "add","update", "blame")) and not helpful:        
             await message.channel.send("command only available to helpful role")
 
-        elif msg.startswith("add") and helpful:            
+        elif msg.startswith(("add", "update")) and helpful:            
             try:
                 words = msg.split('```')
                 key = words[0].split()[1]
                 value = words[1]
-                value = '```'+ value + '```'                
+                value = '```'+ value + '```'
+                if len(value) > 1000:
+                    await message.channel.send("snippet is too long, 1000 chars max")
+                    return                  
                 db.set(key, {"body":value, "author":author, "time":time_stamp})
                 db.dump()
                 await message.channel.send(key + " added")
