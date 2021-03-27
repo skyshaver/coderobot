@@ -22,3 +22,12 @@ std::cout << "hello world";
 `@CodeRobot` _rem cout_
 """
 
+question = """
+1. Understand the code to the best of your ability
+2. Clearly describe the problem
+3. Provide code that illustrates the problem
+4. Make sure the code you're sharing can reproduce the problem
+5. Format your code consistently
+6. Check yourself for typos
+7. Explain what you did to troubleshoot the problem
+"""
